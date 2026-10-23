@@ -1,0 +1,350 @@
+:host {
+  --mds-sidebar-width: 248px;
+  --mds-sidebar-width-collapsed: 64px;
+  --mds-sidebar-bg: #00778a;
+  --mds-sidebar-bg-active: #005360;
+  --mds-sidebar-bg-hover: rgba(255, 255, 255, 0.1);
+  --mds-sidebar-fg: #ffffff;
+  --mds-sidebar-divider: rgba(255, 255, 255, 0.45);
+  --mds-sidebar-radius: 6px;
+
+  display: block;
+  height: 100%;
+  width: var(--mds-sidebar-width);
+  flex-shrink: 0;
+  transition: width 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--mds-sidebar-bg);
+  color: var(--mds-sidebar-fg);
+}
+
+:host(.is-collapsed) {
+  width: var(--mds-sidebar-width-collapsed);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 14px 12px 8px;
+}
+
+.header.is-collapsed {
+  align-items: center;
+  padding-inline: 0;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-btn:hover,
+.item:hover {
+  background: var(--mds-sidebar-bg-hover);
+}
+
+.icon-btn.is-active,
+.icon-btn.is-active:hover {
+  background: var(--mds-sidebar-bg-active);
+}
+
+.icon-btn:focus-visible,
+.item:focus-visible,
+.back:focus-visible,
+.search-input:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.search {
+  position: relative;
+  display: block;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #71717a;
+  --mds-icon-size: 14px;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: 32px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #3f3f46;
+  font: inherit;
+  font-size: 13px;
+  padding: 0 10px 0 30px;
+}
+
+.search-input::placeholder {
+  color: #a1a1aa;
+}
+
+.viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.track {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.level {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
+.level.is-shown {
+  visibility: visible;
+}
+
+.level.animate-in-right,
+.level.animate-in-left {
+  z-index: 2;
+}
+
+.level.animate-out-left,
+.level.animate-out-right {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.level.animate-out-left .back,
+.level.animate-out-left .items > li {
+  animation: menu-out-left 0.4s both cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.level.animate-out-right .back,
+.level.animate-out-right .items > li {
+  animation: menu-out-right 0.4s both cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.level.animate-in-right .back,
+.level.animate-in-right .items > li {
+  animation: menu-in-right 0.4s both cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.level.animate-in-left .back,
+.level.animate-in-left .items > li {
+  animation: menu-in-left 0.4s both cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+@keyframes menu-out-left {
+  to {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes menu-out-right {
+  to {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes menu-in-right {
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes menu-in-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 16px);
+  margin: 4px 8px 2px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--mds-sidebar-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  --mds-icon-size: 16px;
+}
+
+.back:hover {
+  background: var(--mds-sidebar-bg-hover);
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+.level .items {
+  flex: 1;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--mds-sidebar-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item.is-active {
+  background: var(--mds-sidebar-bg-active);
+}
+
+.item.is-active:hover {
+  background: var(--mds-sidebar-bg-active);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  margin-left: auto;
+  --mds-icon-size: 14px;
+  opacity: 0.9;
+}
+
+.bullet {
+  width: 5px;
+  height: 5px;
+  margin-inline: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.prime-icon {
+  width: 18px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.empty {
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+}
+
+.footer {
+  margin-top: auto;
+  padding-bottom: 10px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid var(--mds-sidebar-divider);
+  margin: 8px 16px;
+}
+
+.rail {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar > .rail {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.footer.is-rail .rail {
+  padding-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host,
+  .track {
+    transition: none;
+  }
+
+  .level.animate-out-left .back,
+  .level.animate-out-left .items > li,
+  .level.animate-out-right .back,
+  .level.animate-out-right .items > li,
+  .level.animate-in-right .back,
+  .level.animate-in-right .items > li,
+  .level.animate-in-left .back,
+  .level.animate-in-left .items > li {
+    animation: none;
+  }
+}

@@ -1,0 +1,87 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: #f4f4f5;
+  color: #18181b;
+}
+
+.mds-sidebar-overlay.p-tieredmenu {
+  min-width: 196px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #27272a;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
+  padding: 4px;
+}
+
+.mds-sidebar-overlay .p-tieredmenu-item-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #27272a;
+  font-size: 14px;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.mds-sidebar-overlay .p-tieredmenu-item-content:hover,
+.mds-sidebar-overlay .p-tieredmenu-item.p-tieredmenu-item-active > .p-tieredmenu-item-content {
+  background: #f4f4f5;
+  border-radius: 6px;
+}
+
+.mds-sidebar-overlay .p-tieredmenu-submenu-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  color: #71717a;
+}
+
+.mds-sidebar-overlay .p-tieredmenu-submenu {
+  min-width: 168px;
+  padding: 4px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
+}
+
+.mds-sidebar-tooltip .p-tooltip-text {
+  background: #27272a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.mds-sidebar-tooltip .p-tooltip-arrow {
+  display: none;
+}
+
+.mds-search-mask.p-dialog-mask {
+  background: rgba(24, 24, 27, 0.28);
+}
+
+.mds-search-dialog.p-dialog {
+  border: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+}
+
+.mds-search-dialog .p-dialog-content {
+  padding: 0;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 18px;
+}

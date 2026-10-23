@@ -1,0 +1,205 @@
+<nav class="sidebar" [attr.aria-label]="rootLabel()">
+  <div class="header" [class.is-collapsed]="collapsed()">
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="toggleCollapsed()"
+      [attr.aria-expanded]="!collapsed()"
+      [attr.aria-label]="collapsed() ? 'Expandir menú' : 'Contraer menú'"
+    >
+      <mds-icon [name]="collapsed() ? 'square' : 'panel'" />
+    </button>
+
+    @if (collapsed()) {
+      <button type="button" class="icon-btn" (click)="openSearch()" aria-label="Buscar">
+        <mds-icon name="search" />
+      </button>
+    } @else {
+      <label class="search">
+        <span class="search-icon"><mds-icon name="search" /></span>
+        <input
+          #searchInput
+          class="search-input"
+          type="search"
+          placeholder="Search..."
+          [value]="query()"
+          (input)="onSearch($any($event.target).value)"
+          (keydown.escape)="onSearchEscape($event)"
+          aria-label="Buscar en el menú"
+          autocomplete="off"
+        />
+      </label>
+    }
+  </div>
+
+  @if (!collapsed()) {
+    <div class="viewport">
+      <div class="track">
+        @for (frame of frames(); track frame.key; let level = $index) {
+          <section
+            class="level"
+            [class.is-shown]="isLevelShown(frame)"
+            [class.animate-out-left]="motionKind(frame) === 'out-left'"
+            [class.animate-out-right]="motionKind(frame) === 'out-right'"
+            [class.animate-in-right]="motionKind(frame) === 'in-right'"
+            [class.animate-in-left]="motionKind(frame) === 'in-left'"
+            [attr.aria-label]="frame.backLabel || rootLabel()"
+          >
+            @if (frame.backLabel) {
+              <button
+                #backButton
+                type="button"
+                class="back"
+                (click)="goBack()"
+                aria-label="Volver a {{ frame.backLabel }}"
+              >
+                <mds-icon name="arrow" />
+                <span>{{ frame.backLabel }}</span>
+              </button>
+            }
+
+            <ul class="items">
+              @for (item of itemsOf(frame); track item.id; let index = $index) {
+                <li [style.animation-delay]="itemDelay(frame, index)">
+                  <button
+                    type="button"
+                    class="item"
+                    [class.is-active]="isActive(frame, level, item.id)"
+                    [class.has-children]="hasChildren(item)"
+                    (click)="activate(item)"
+                    [attr.aria-current]="isActive(frame, level, item.id) ? 'page' : null"
+                  >
+                    @if (level === 0) {
+                      @if (isPrimeIcon(item.icon)) {
+                        <i class="prime-icon" [class]="item.icon!" aria-hidden="true"></i>
+                      } @else if (item.icon) {
+                        <mds-icon [name]="item.icon!" />
+                      } @else {
+                        <span class="bullet" aria-hidden="true"></span>
+                      }
+                    } @else {
+                      <span class="bullet" aria-hidden="true"></span>
+                    }
+                    <span class="label">{{ item.label }}</span>
+                    @if (hasChildren(item)) {
+                      <mds-icon class="chevron" name="chevron" />
+                    }
+                  </button>
+                </li>
+              } @empty {
+                <li class="empty">Sin resultados</li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+    </div>
+
+    @if (footerItems().length) {
+      <div class="footer">
+        <hr class="divider" />
+        <ul class="items">
+          @for (item of footerItems(); track item.id) {
+            <li>
+              <button
+                type="button"
+                class="item"
+                [class.is-active]="activeId() === item.id"
+                (click)="activate(item)"
+                [attr.aria-current]="activeId() === item.id ? 'page' : null"
+              >
+                @if (isPrimeIcon(item.icon)) {
+                  <i class="prime-icon" [class]="item.icon!" aria-hidden="true"></i>
+                } @else if (item.icon) {
+                  <mds-icon [name]="item.icon!" />
+                }
+                <span class="label">{{ item.label }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  } @else {
+    <ul class="rail">
+      @for (item of items(); track item.id) {
+        <li>
+          <button
+            type="button"
+            class="icon-btn"
+            [class.is-active]="activeRootId() === item.id || openOverlayId() === item.id"
+            [pTooltip]="item.label"
+            tooltipPosition="right"
+            tooltipStyleClass="mds-sidebar-tooltip"
+            appendTo="body"
+            [escape]="true"
+            [tooltipDisabled]="openOverlayId() === item.id"
+            [showDelay]="180"
+            [attr.aria-label]="item.label"
+            [attr.aria-haspopup]="hasChildren(item) ? 'menu' : null"
+            [attr.aria-expanded]="hasChildren(item) ? openOverlayId() === item.id : null"
+            (click)="hasChildren(item) ? toggleOverlay($event, item) : activate(item)"
+          >
+            @if (isPrimeIcon(item.icon)) {
+              <i [class]="item.icon!" aria-hidden="true"></i>
+            } @else if (item.icon) {
+              <mds-icon [name]="item.icon!" />
+            }
+          </button>
+          @if (hasChildren(item)) {
+            <p-tieredMenu
+              [model]="overlayModels().get(item.id)"
+              [popup]="true"
+              appendTo="body"
+              styleClass="mds-sidebar-overlay"
+              breakpoint="0px"
+              [autoDisplay]="true"
+              (onShow)="onOverlayShow(item.id)"
+              (onHide)="onOverlayHide(item.id)"
+            />
+          }
+        </li>
+      }
+    </ul>
+
+    @if (footerItems().length) {
+      <div class="footer is-rail">
+        <hr class="divider" />
+        <ul class="rail">
+          @for (item of footerItems(); track item.id) {
+            <li>
+              <button
+                type="button"
+                class="icon-btn"
+                [class.is-active]="activeId() === item.id"
+                [pTooltip]="item.label"
+                tooltipPosition="right"
+                tooltipStyleClass="mds-sidebar-tooltip"
+                appendTo="body"
+                [escape]="true"
+                [showDelay]="180"
+                [attr.aria-label]="item.label"
+                (click)="activate(item)"
+              >
+                @if (isPrimeIcon(item.icon)) {
+                  <i [class]="item.icon!" aria-hidden="true"></i>
+                } @else if (item.icon) {
+                  <mds-icon [name]="item.icon!" />
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  }
+</nav>
+
+<mds-sidebar-search-dialog
+  [(open)]="searchOpen"
+  [items]="items()"
+  [footerItems]="footerItems()"
+  [recentIds]="recentIds()"
+  (pick)="onSearchPick($event)"
+  (clearRecent)="onClearRecent()"
+/>

@@ -1,0 +1,91 @@
+<p-dialog
+  [visible]="open()"
+  (visibleChange)="onVisible($event)"
+  (onShow)="onShow()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
+  [closable]="true"
+  [showHeader]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="false"
+  appendTo="body"
+  styleClass="mds-search-dialog"
+  maskStyleClass="mds-search-mask"
+  contentStyleClass="mds-search-dialog__content"
+  [style]="{ width: '480px', maxWidth: 'calc(100vw - 32px)' }"
+  ariaLabel="Buscar en el menú"
+>
+  <div class="palette" (keydown)="onKeydown($event)">
+    <label class="search">
+      <span class="search-icon"><mds-icon name="search" /></span>
+      <input
+        #searchInput
+        class="search-input"
+        type="search"
+        placeholder="Search..."
+        [value]="query()"
+        (input)="onQuery($any($event.target).value)"
+        aria-label="Buscar"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </label>
+
+    <div
+      class="list"
+      role="listbox"
+      [attr.aria-label]="hits().length || searching() ? heading() : 'Todavía no has accedido a ninguna sección'"
+    >
+      @if (hits().length || searching()) {
+        <div class="section-head">
+          <p class="section">{{ heading() }}</p>
+          @if (showClear()) {
+            <button type="button" class="clear" (click)="onClear($event)">Limpiar</button>
+          }
+        </div>
+      }
+      @for (hit of hits(); track hit.item.id) {
+        <button
+          type="button"
+          class="result"
+          role="option"
+          [class.is-active]="keyboard() && isSelected(hit)"
+          [attr.aria-selected]="isSelected(hit)"
+          (mouseenter)="choose(hit)"
+          (click)="confirm(hit)"
+        >
+          @if (isPrimeIcon(hit.item.icon)) {
+            <i class="result-icon" [class]="hit.item.icon!" aria-hidden="true"></i>
+          } @else if (hit.item.icon) {
+            <mds-icon class="result-icon" [name]="hit.item.icon!" />
+          } @else {
+            <span class="result-mark" aria-hidden="true"></span>
+          }
+          <span class="result-copy">
+            <span class="result-label">{{ hit.item.label }}</span>
+            @if (hit.ancestors.length) {
+              <span class="result-path">{{ pathLabel(hit) }}</span>
+            }
+          </span>
+        </button>
+      } @empty {
+        @if (searching()) {
+          <p class="empty">Sin resultados</p>
+        } @else {
+          <div class="empty-state">
+            <img
+              class="empty-art"
+              src="disabled-section.png"
+              width="128"
+              height="128"
+              alt=""
+            />
+            <p class="empty-title">Todavía no has accedido a ninguna sección</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</p-dialog>

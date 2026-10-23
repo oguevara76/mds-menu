@@ -1,0 +1,14 @@
+<div class="shell">
+  <mds-sidebar
+    [items]="items"
+    [footerItems]="footerItems"
+    rootLabel="Portada"
+    [(collapsed)]="collapsed"
+    [(activeId)]="activeId"
+    (itemSelect)="onSelect($event)"
+  />
+  <main>
+    <p class="kicker">Sección</p>
+    <h1>{{ selected().label }}</h1>
+  </main>
+</div>
