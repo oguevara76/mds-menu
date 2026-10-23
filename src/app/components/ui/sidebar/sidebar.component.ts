@@ -193,7 +193,6 @@ export class SidebarComponent {
     ]);
     this.query.set('');
     this.activeId.set(item.id);
-    this.itemSelect.emit(item);
     this.remember(item.id);
     this.playMotion(
       { outKey: current.key, inKey: `level:${item.id}`, direction: 'forward', origin },
